@@ -83,7 +83,7 @@ class CacheService {
      */
     static async getAll(req) {
         const currentDate = getISODate();
-        const query = { expiration: { $gte: currentDate } };
+        const query = { expiration: { $gte: currentDate } }; // used expiration in case scheduler is yet to delete expired records
         const records = await paginatedQuery( req, CacheModel, query, { sort: { expiration: -1 } } );
 
         // return result in map as the standard cache storage mechanism.
@@ -110,6 +110,8 @@ class CacheService {
         }
 
         const currentDate = getISODate();
+
+        // used expiration in case scheduler is yet to delete expired records
         const cache = await CacheModel.findOne( { key: _key, expiration: { $gte: currentDate } } ).exec();
         return cache?.value || null;
     }
@@ -127,6 +129,8 @@ class CacheService {
         }
 
         const currentDate = getISODate();
+
+        // used expiration in case scheduler is yet to delete expired records
         const count = await CacheModel.countDocument( { key: _key, expiration: { $gte: currentDate } } ).exec();
         return { isExpired: count <= 0 };
     }
