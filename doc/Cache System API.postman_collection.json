@@ -405,14 +405,14 @@
 					}
 				},
 				"url": {
-					"raw": "{{BASE_URL}}flush?keys=store_pie",
+					"raw": "{{BASE_URL}}flush?keys=store_pie,store_lil",
 					"host": [
 						"{{BASE_URL}}flush"
 					],
 					"query": [
 						{
 							"key": "keys",
-							"value": "store_pie"
+							"value": "store_pie,store_lil"
 						}
 					]
 				}
@@ -433,14 +433,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{BASE_URL}}flush?keys=store_pie",
+							"raw": "{{BASE_URL}}flush?keys=store_pie,store_lil",
 							"host": [
 								"{{BASE_URL}}flush"
 							],
 							"query": [
 								{
 									"key": "keys",
-									"value": "store_pie"
+									"value": "store_pie,store_lil"
 								}
 							]
 						}
