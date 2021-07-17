@@ -22,8 +22,7 @@ node 15.X and above
 npm 7.X and above
 ```
 
-### Server Side
-This is where the backend system is created to interface with the client. The structure of the server side is as follows:
+### Service Structure
 ```
 bin/
 src/
