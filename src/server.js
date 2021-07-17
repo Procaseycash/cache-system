@@ -8,6 +8,7 @@ const mongoose = require( 'mongoose' );
 const cookieParser = require( 'cookie-parser' );
 const logger = require( 'morgan' );
 const AppRoute = require( './routes' );
+const { ScheduleService } = require( './services' );
 
 /**
  * This is database setup layer.
@@ -15,7 +16,15 @@ const AppRoute = require( './routes' );
 const setupDatabase = () => {
     mongoose.set( 'useCreateIndex', true );
     mongoose.connect( process.env.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true } )
-        .then( () => console.info( 'MONGO_DB: Connected' ) )
+        .then( () => {
+
+            console.info( 'MONGO_DB: Connected' );
+
+            // start scheduling jobs
+            ScheduleService.removeRecordsWithExpiration();
+            ScheduleService.removeRecordsWithoutExpiration();
+
+        } )
         .catch( e => {
             console.error( 'MONGODB_ERROR: ', e.stack );
         } );

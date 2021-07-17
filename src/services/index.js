@@ -4,6 +4,7 @@
  */
 
 const CacheService = require( './CacheService' );
+const ScheduleService = require( './ScheduleService' );
 
 
-module.exports = { CacheService };
+module.exports = { CacheService, ScheduleService };

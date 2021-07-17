@@ -27,7 +27,7 @@ const getExpiration = duration => {
  * @param date
  * @returns {string}
  */
-const getISODate = (date = '') => new Date( date ).toISOString();
+const getISODate = (date) => (date ? new Date( date ) : new Date()).toISOString();
 
 /**
  * This is used to determine if the cache record hasn't over stayed.
