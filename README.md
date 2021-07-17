@@ -1,7 +1,7 @@
 ## Cache System
 This service uses `express-generator` to scaffold the application structure which was later modified.
 
-The API Postman documentation can be download ![Alt text](doc/Cache%20System%20API.postman_collection.json "API Documentation") and the environment configuration from ![Alt text](doc/Cache%20System%20Environment.postman_environment.json "API Environment Config")
+The API Postman documentation can be download <a href='/doc/Cache%20System%20API.postman_collection.json'> API Documentation </a> and the environment configuration from  <a href='/doc/Cache%20System%20Environment.postman_environment.json'> API Environment </a>
 
 ### Setup and Running of the app
 All that is needed to be done is:
