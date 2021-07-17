@@ -37,6 +37,10 @@ src/
 .env    
 ```
 
+### Schedular
+
+There is a schedule that clean up expired cache data from database and the in-memory db to avoid overloading the database.
+
 ### Environment
 Made use of environment system called `.env` to handle some global configuration for the server side through the `dotenv` library.
 This is added as part of the repo only for the sake of easy access.
