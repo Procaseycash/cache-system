@@ -41,7 +41,7 @@ class CacheService {
     }
 
     /**
-     * This is used to update the record updatedAt once it is accessed by fetch or get.
+     * This is used to update the record updatedAt once it is accessed by getAll, getStatus or get.
      * @param keys
      * @returns {Promise|Promise<ResultType>|Promise<R>|any|void|never|ChildProcess|RegExpExecArray}
      */
@@ -120,6 +120,7 @@ class CacheService {
         const _key = formatKey( key );
         const record = this[_getFromInMemory]( _key );
         if ( record ) {
+            this[_updateAccessedRecord]( [_key] ); // update in background for all accessed records.
             return record;
         }
 
@@ -142,6 +143,7 @@ class CacheService {
         const _key = formatKey( key );
         const record = this[_getFromInMemory]( _key );
         if ( record ) {
+            this[_updateAccessedRecord]( [_key] ); // update in background for all accessed records.
             return { isExpired: false };
         }
 
