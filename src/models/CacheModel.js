@@ -19,6 +19,6 @@ const CacheSchema = new Schema( {
         index: true,
         default: null
     },
-}, { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } } );
+}, { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } } );  // timestamps will be used for schedule strategy.
 
 module.exports = model( 'Cache', CacheSchema );

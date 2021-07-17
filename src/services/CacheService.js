@@ -2,7 +2,7 @@
  * Cache service definition layer
  */
 const { CacheModel } = require( '../models' );
-const { formatKey, getExpiration } = require( '../utils' );
+const { formatKey, getExpiration, paginatedQuery } = require( '../utils' );
 
 const _inMemoryStore = Symbol(); // helps to create a private store..
 
@@ -43,15 +43,26 @@ class CacheService {
 
     /**
      * Get all data from cache
-     * @returns {Promise<Array>}
+     * @returns {Promise<{totalRecords: number, limit: number, page: number, totalPages: number, results: Map}>}
      */
-    static async getAll() {
+    static async getAll(req) {
+        const records = await paginatedQuery( req, CacheModel, {}, { sort: { expiration: -1 } } );
+
+        // return result in map as the standard cache storage mechanism.
+        records.results = records.results.reduce( (result, cache) => {
+            const { key, expiration, value } = cache;
+            const _key = key.replace( process.env.CACHE_KEY, '' );
+            result.set( _key, { value, expiration } );
+            return result;
+        }, new Map() );
+
+        return records;
     }
 
     /**
      * Get data from cache
      * @param key
-     * @returns {Promise<Object>}
+     * @returns {Promise<any>}
      */
     static async get(key) {
         const _key = formatKey( key );
@@ -71,7 +82,12 @@ class CacheService {
      */
     static async getStatus(key) {
         const _key = formatKey( key );
-        return { isExpired: !this[_inMemoryStore].has( _key ) };
+        const isExist = this[_inMemoryStore].has( _key );
+        if ( isExist ) {
+            return { isExpired: !isExist };
+        }
+        const count = await CacheModel.countDocument( { key: _key } ).exec();
+        return { isExpired: count <= 0 };
     }
 
     /**
