@@ -9,6 +9,7 @@ const messages = {
         get: 'Fetch an item from store successfully.',
         put: 'Update data in store successfully.',
         remove: 'Remove data in store successfully.',
+        removeAllByKeys: 'Remove records by specified keys in store successfully.',
         flush: 'Flush all data in store successfully',
         status: 'successfully retrieved status for a requested key.',
     },
@@ -19,6 +20,7 @@ const messages = {
         delete: e => `Unable to perform remove a record due to ${ e.message }, please try again.`,
         put: e => `Unable to update a record due to ${ e.message }, please try again.`,
         remove: e => `Unable to remove a record due to ${ e.message }, please try again.`,
+        removeAllByKeys: e => `Unable to remove records by keys due to ${ e.message }, please try again.`,
         flush: e => `Unable to remove all records due to ${ e.message }, please try again.`,
         status: e => `Unable to retrieved status of requested key due to ${ e.message }, please try again.`,
     }

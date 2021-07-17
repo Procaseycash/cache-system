@@ -22,7 +22,9 @@ class CacheRouter {
 
         app.route( `${ API_ROUTE }/:id` ).delete( CacheController.remove );
 
-        app.route( `${ API_ROUTE }/clear` ).delete( CacheController.flush );
+        app.route( `${ API_ROUTE }/flush-keys` ).delete( CacheController.removeAllByKeys );
+
+        app.route( `${ API_ROUTE }/flush` ).delete( CacheController.flush );
     }
 }
 

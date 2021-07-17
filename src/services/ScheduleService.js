@@ -5,15 +5,45 @@
 const cron = require( 'node-cron' );
 const { CacheModel } = require( '../models' );
 const { getISODate } = require( '../utils' );
+const CacheService = require( './CacheService' );
 
 // private field key
 const _removeRecordsWithExpiration = Symbol();
 const _removeRecordsWithoutExpiration = Symbol();
+const _deleteRecordsWithSchedular = Symbol();
 
 class ScheduleService {
 
+
+    /***
+     *
+     *  Private Fields and  Methods
+     *
+     *
+     */
+
     static [_removeRecordsWithoutExpiration] = null;
     static [_removeRecordsWithExpiration] = null;
+
+
+    /**
+     * This is used to delete records from DB
+     * @param query
+     * @returns {Promise<void>}
+     */
+    static async [_deleteRecordsWithSchedular](query = {}) {
+        const records = await CacheModel.find( query ).select( 'key' ).exec();
+        const keys = records.map( r => r.key );
+        await CacheService.removeAllByKeys( keys );
+    }
+
+
+    /***
+     *
+     *  Public Methods
+     *
+     */
+
 
     /**
      * Handle removal of cache items with expiration
@@ -39,7 +69,8 @@ class ScheduleService {
 
                     console.info( `Scheduler running for cache with expiration: interval: ${ interval }, current date:  ${ currentDate }` );
 
-                    await CacheModel.deleteMany( { expiration: { $lt: currentDate } } ).exec();
+                    const query = { expiration: { $lt: currentDate } };
+                    await this[_deleteRecordsWithSchedular]( query );
 
                 } catch ( e ) {
                     console.error( 'Cache without expiration implementation error: ', e.stack );
@@ -51,6 +82,7 @@ class ScheduleService {
             console.error( 'Cron Tab Running Error: ', e.stack );
         }
     }
+
 
     /**
      * A policy is configured to delete records without expiration after it has not been accessed/updated for about n days.
@@ -76,8 +108,8 @@ class ScheduleService {
                     const dateBackTrack = getISODate( new Date().setHours( hoursBefore ) );
 
                     console.info( `Scheduler running for cache without expiration:: interval: ${ interval }, back track date: ${ dateBackTrack }` );
-
-                    await CacheModel.deleteMany( { expiration: null, updated_at: { $lte: dateBackTrack } } ).exec();
+                    const query = { expiration: null, updated_at: { $lte: dateBackTrack } };
+                    await this[_deleteRecordsWithSchedular]( query );
 
                 } catch ( e ) {
                     console.error( 'Cache without expiration implementation error: ', e.stack );

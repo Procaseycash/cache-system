@@ -181,6 +181,19 @@ class CacheService {
         return true;
     }
 
+    /**
+     * Remove all by keys
+     * @returns {Promise<Boolean>}
+     */
+    static async removeAllByKeys(keys = []) {
+        keys.forEach( key => {
+            const _key = key.includes( process.env.CACHE_KEY ) ? key : formatKey( key );
+            this[_inMemoryStore].delete( _key );
+        } );
+        await CacheModel.deleteMany( { key: { $in: keys } } ).exec();
+        return true;
+    }
+
 
 }
 

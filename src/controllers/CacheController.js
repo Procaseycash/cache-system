@@ -89,6 +89,22 @@ class CacheController {
     }
 
     /**
+     * This is used to remove items base on query keys
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    static async removeAllByKeys(req, res) {
+        try {
+            const keys = req.query.keys.split( ', ' );
+            const result = await CacheService.removeAllByKeys( keys );
+            ResponseHandler.success( res, result, success.removeAllByKeys );
+        } catch ( e ) {
+            ResponseHandler.error( res, error.removeAllByKeys( e ) );
+        }
+    }
+
+    /**
      * This is used to remove all items in store
      * @param req
      * @param res
