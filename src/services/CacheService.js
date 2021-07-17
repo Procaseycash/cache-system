@@ -6,6 +6,7 @@ const { formatKey, getExpiration, paginatedQuery, getISODate, isCacheExist } = r
 
 const _inMemoryStore = Symbol(); // helps to create a private store..
 const _getFromInMemory = Symbol(); // helps to create a private get memory key..
+const _updateAccessedRecord = Symbol(); // helps to create a private get memory key..
 
 class CacheService {
 
@@ -37,6 +38,15 @@ class CacheService {
         }
 
         return null;
+    }
+
+    /**
+     * This is used to update the record updatedAt once it is accessed by fetch or get.
+     * @param keys
+     * @returns {Promise|Promise<ResultType>|Promise<R>|any|void|never|ChildProcess|RegExpExecArray}
+     */
+    static [_updateAccessedRecord](keys = []) {
+        return CacheModel.updateMany( { key: { $in: keys } }, { $set: { updated_at: getISODate() } } ).exec();
     }
 
 
@@ -83,16 +93,20 @@ class CacheService {
      */
     static async getAll(req) {
         const currentDate = getISODate();
-        const query = { expiration: { $gte: currentDate } }; // used expiration in case scheduler is yet to delete expired records
+        const query = { $or: [{ expiration: { $gte: currentDate } }, { expiration: null }] }; // used expiration in case scheduler is yet to delete expired records
         const records = await paginatedQuery( req, CacheModel, query, { sort: { expiration: -1 } } );
+        const keys = [];
 
         // return result in map as the standard cache storage mechanism.
         records.results = records.results.reduce( (result, cache) => {
             const { key, expiration, value } = cache;
             const _key = key.replace( process.env.CACHE_KEY, '' );
             result.set( _key, { value, expiration } );
+            keys.push( key );
             return result;
         }, new Map() );
+
+        this[_updateAccessedRecord]( keys ); // update in background for all accessed records.
 
         return records;
     }
@@ -113,6 +127,9 @@ class CacheService {
 
         // used expiration in case scheduler is yet to delete expired records
         const cache = await CacheModel.findOne( { key: _key, expiration: { $gte: currentDate } } ).exec();
+
+        this[_updateAccessedRecord]( [cache.key] ); // update in background for all accessed records.
+
         return cache?.value || null;
     }
 
@@ -132,6 +149,9 @@ class CacheService {
 
         // used expiration in case scheduler is yet to delete expired records
         const count = await CacheModel.countDocument( { key: _key, expiration: { $gte: currentDate } } ).exec();
+
+        this[_updateAccessedRecord]( [_key] ); // update in background for all accessed records.
+
         return { isExpired: count <= 0 };
     }
 
