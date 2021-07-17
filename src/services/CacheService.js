@@ -180,7 +180,7 @@ class CacheService {
     static async remove(key) {
         const _key = formatKey( key );
         if ( this[_inMemoryStore].has( _key ) ) {
-            return this[_inMemoryStore].delete( _key );
+            this[_inMemoryStore].delete( _key );
         }
         await CacheModel.deleteOne( { key: _key } ).exec();
         return true;
