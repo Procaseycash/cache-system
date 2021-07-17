@@ -206,7 +206,7 @@ class CacheService {
         }
 
         keys = keys.map( key => {
-            const _key = key.includes( process.env.CACHE_KEY ) ? key : formatKey( key );
+            const _key = formatKey( key );
             this[_inMemoryStore].delete( _key );
             return _key;
         } );
