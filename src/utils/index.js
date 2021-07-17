@@ -31,14 +31,19 @@ const getISODate = (date = '') => new Date( date ).toISOString();
 
 /**
  * This is used to determine if the cache record hasn't over stayed.
- * @param latestDate
- * @param oldDate
+ * @param expirationDate
+ * @param currentDate
  * @returns {boolean}
  */
-const isCacheExist = (latestDate, oldDate) => {
-    const currentDate = new Date( latestDate ).getTime();
-    const previousDate = new Date( oldDate ).getTime();
-    return currentDate > previousDate;
+const isCacheExist = (expirationDate, currentDate) => {
+
+    if ( !expirationDate ) { // This is useful for cache that do not set expiration or expiration is set as null.
+        return true;
+    }
+
+    expirationDate = new Date( expirationDate ).getTime();
+    currentDate = new Date( currentDate ).getTime();
+    return expirationDate >= currentDate;
 };
 
 /**
