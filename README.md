@@ -37,7 +37,7 @@ src/
 .env    
 ```
 
-### Schedular
+### Scheduler
 
 There is a schedule that clean up expired cache data from database and the in-memory db to avoid overloading the database.
 
