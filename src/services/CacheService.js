@@ -2,13 +2,49 @@
  * Cache service definition layer
  */
 const { CacheModel } = require( '../models' );
-const { formatKey, getExpiration, paginatedQuery } = require( '../utils' );
+const { formatKey, getExpiration, paginatedQuery, getISODate, isCacheExist } = require( '../utils' );
 
 const _inMemoryStore = Symbol(); // helps to create a private store..
+const _getFromInMemory = Symbol(); // helps to create a private get memory key..
 
 class CacheService {
 
+    /***
+     *
+     *
+     *  Private fields and methods Declaration
+     *
+     */
+
     static [_inMemoryStore] = new Map(); // static in-memory store.
+
+    /**
+     *  Fetch record from the in-memory with expiration put in consideration.
+     * @param key
+     * @returns {*|null}
+     */
+    static [_getFromInMemory](key) {
+
+        if ( this[_inMemoryStore].has( key ) ) {
+            const cache = this[_inMemoryStore].get( key );
+            const value = cache?.value;
+
+            // used in case scheduler is yet to delete expired records
+            if ( isCacheExist( cache.expiration, Date.now() ) ) {
+                return value || null;
+            }
+
+        }
+
+        return null;
+    }
+
+
+    /***
+     *
+     *  Public Methods Declaration.
+     *
+     */
 
     /**
      * Set data to cache
@@ -46,7 +82,9 @@ class CacheService {
      * @returns {Promise<{totalRecords: number, limit: number, page: number, totalPages: number, results: Map}>}
      */
     static async getAll(req) {
-        const records = await paginatedQuery( req, CacheModel, {}, { sort: { expiration: -1 } } );
+        const currentDate = getISODate();
+        const query = { expiration: { $gte: currentDate } };
+        const records = await paginatedQuery( req, CacheModel, query, { sort: { expiration: -1 } } );
 
         // return result in map as the standard cache storage mechanism.
         records.results = records.results.reduce( (result, cache) => {
@@ -62,16 +100,17 @@ class CacheService {
     /**
      * Get data from cache
      * @param key
-     * @returns {Promise<any>}
+     * @returns {Promise<*>}
      */
     static async get(key) {
         const _key = formatKey( key );
-        let cache = null;
-        if ( this[_inMemoryStore].has( _key ) ) {
-            cache = this[_inMemoryStore].get( _key );
-            return cache?.value || null;
+        const record = this[_getFromInMemory]( _key );
+        if ( record ) {
+            return record;
         }
-        cache = await CacheModel.findOne( { key: _key } ).exec();
+
+        const currentDate = getISODate();
+        const cache = await CacheModel.findOne( { key: _key, expiration: { $gte: currentDate } } ).exec();
         return cache?.value || null;
     }
 
@@ -82,11 +121,13 @@ class CacheService {
      */
     static async getStatus(key) {
         const _key = formatKey( key );
-        const isExist = this[_inMemoryStore].has( _key );
-        if ( isExist ) {
-            return { isExpired: !isExist };
+        const record = this[_getFromInMemory]( _key );
+        if ( record ) {
+            return { isExpired: false };
         }
-        const count = await CacheModel.countDocument( { key: _key } ).exec();
+
+        const currentDate = getISODate();
+        const count = await CacheModel.countDocument( { key: _key, expiration: { $gte: currentDate } } ).exec();
         return { isExpired: count <= 0 };
     }
 

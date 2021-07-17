@@ -2,16 +2,43 @@
  * Utils Definition modules.
  */
 
-// used to format key in store.
+/**
+ * used to format key in store.
+ * @param key
+ * @returns {string}
+ */
 const formatKey = key => `${ process.env.CACHE_KEY }${ key }`;
 
-// used to get the expiration date.
+/**
+ * Used to get the expiration date.
+ * @param duration
+ * @returns {*}
+ */
 const getExpiration = duration => {
     let expiration = null;
     if ( duration ) {
-        expiration = new Date().setSeconds( duration );
+        expiration = new Date( new Date().setSeconds( duration ) ).toISOString();
     }
     return expiration;
+};
+
+/**
+ * Get instant date in ISO format
+ * @param date
+ * @returns {string}
+ */
+const getISODate = (date = '') => new Date( date ).toISOString();
+
+/**
+ * This is used to determine if the cache record hasn't over stayed.
+ * @param latestDate
+ * @param oldDate
+ * @returns {boolean}
+ */
+const isCacheExist = (latestDate, oldDate) => {
+    const currentDate = new Date( latestDate ).getTime();
+    const previousDate = new Date( oldDate ).getTime();
+    return currentDate > previousDate;
 };
 
 /**
@@ -20,7 +47,7 @@ const getExpiration = duration => {
  * @param model
  * @param dbQuery
  * @param others
- * @returns {Promise<{totalRecords: number, totalPages: number, limit: number, currentPage: number, results: any}>}
+ * @returns {Promise<{totalRecords: number, totalPages: number, limit: number, currentPage: number, results: *}>}
  */
 const paginatedQuery = async (req, model, dbQuery = {}, others = { selector: {}, sort: {}, populate: [] }) => {
 
@@ -49,4 +76,4 @@ const paginatedQuery = async (req, model, dbQuery = {}, others = { selector: {},
 
 };
 
-module.exports = { formatKey, getExpiration, paginatedQuery };
+module.exports = { formatKey, getExpiration, paginatedQuery, getISODate, isCacheExist };
