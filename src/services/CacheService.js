@@ -67,6 +67,9 @@ class CacheService {
      * @returns {Promise<Boolean>}
      */
     static async set(key, value, duration = 0) {
+        if ( !key || !value ) {
+            throw new Error( Messages.error.missingRequiredFields );
+        }
         const _key = formatKey( key );
         if ( this[_inMemoryStore].has( _key ) ) {
             throw new Error( Messages.error.keyExist );
@@ -85,6 +88,9 @@ class CacheService {
      * @returns {Promise<Boolean>}
      */
     static async put(key, value, duration = 0) {
+        if ( !key || !value ) {
+            throw new Error( Messages.error.missingRequiredFields );
+        }
         const _key = formatKey( key );
         const expiration = getExpiration( duration );
         const doc = { $set: { value, expiration } };

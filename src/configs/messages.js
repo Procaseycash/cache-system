@@ -25,7 +25,8 @@ const messages = {
         status: e => `Unable to retrieved status of requested key due to ${ e.message }, please try again.`,
         keyExist: 'key already exist. perform update instead,',
         notFound: 'record not found.',
-        noRecordToDelete: 'No record to remove.'
+        noRecordToDelete: 'No record to remove.',
+        missingRequiredFields: 'Required fields missing: "key, value"'
     }
 };
 
