@@ -210,6 +210,7 @@ class CacheService {
             this[_inMemoryStore].delete( _key );
             return _key;
         } );
+        
         await CacheModel.deleteMany( { key: { $in: keys } } ).exec();
         return true;
     }
