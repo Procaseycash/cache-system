@@ -1,5 +1,5 @@
 ## Cache System
-This application uses `express-generator` to scaffold the application structure which was later modified.
+This service uses `express-generator` to scaffold the application structure which was later modified.
 
 The API Postman documentation can be download ![Alt text](doc/Cache%20System%20API.postman_collection.json "API Documentation") and the environment configuration from ![Alt text](doc/Cache%20System%20Environment.postman_environment.json "API Environment Config")
 
@@ -11,8 +11,8 @@ $ npm install
 $ npm run start
 ```
 
-### Access the App launch
-Visit http://localhost:3001/ to see the app.
+### Base Service URL
+Visit http://localhost:4000/api/v1/ as the base of the service URL.
 
 ### Libraries
 All library usage can be found in `package.json` and engine setup is on
