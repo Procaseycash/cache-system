@@ -12,19 +12,18 @@ class CacheRouter {
 
         app.route( API_ROUTE ).post( CacheController.set );
 
-        app.route( API_ROUTE ).put( CacheController.put );
+        app.route( `${ API_ROUTE }/:key` ).put( CacheController.put );
 
         app.route( API_ROUTE ).get( CacheController.getAll );
 
-        app.route( `${ API_ROUTE }/:id` ).get( CacheController.get );
+        app.route( `${ API_ROUTE }/:key` ).get( CacheController.get );
 
-        app.route( `${ API_ROUTE }/:id/status` ).get( CacheController.getStatus );
-
-        app.route( `${ API_ROUTE }/:id` ).delete( CacheController.remove );
-
-        app.route( `${ API_ROUTE }/flush-keys` ).delete( CacheController.removeAllByKeys );
+        app.route( `${ API_ROUTE }/:key/status` ).get( CacheController.getStatus );
 
         app.route( `${ API_ROUTE }/flush` ).delete( CacheController.flush );
+
+        app.route( `${ API_ROUTE }/:key` ).delete( CacheController.remove );
+
     }
 }
 

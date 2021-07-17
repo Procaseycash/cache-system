@@ -7,7 +7,7 @@
  * @param key
  * @returns {string}
  */
-const formatKey = key => `${ process.env.CACHE_KEY }${ key }`;
+const formatKey = key => key.includes( process.env.CACHE_KEY ) ? key : `${ process.env.CACHE_KEY }${ key }`;
 
 /**
  * Used to get the expiration date.
@@ -51,10 +51,10 @@ const isCacheExist = (expirationDate, currentDate) => {
  * @param req
  * @param model
  * @param dbQuery
- * @param others
+ * @param options
  * @returns {Promise<{totalRecords: number, totalPages: number, limit: number, currentPage: number, results: *}>}
  */
-const paginatedQuery = async (req, model, dbQuery = {}, others = { selector: {}, sort: {}, populate: [] }) => {
+const paginatedQuery = async (req, model, dbQuery = {}, options = { selector: '', sort: {}, populate: [] }) => {
 
     const { page, limit } = req.query;
     const currentPage = +page || +process.env.CURRENT_PAGINATION_PAGE;
@@ -62,10 +62,10 @@ const paginatedQuery = async (req, model, dbQuery = {}, others = { selector: {},
 
     const modelAction = model.find( dbQuery || {} );
 
-    if ( others ) {
-        if ( others.selector ) modelAction.select( others.selector );
-        if ( others.sort ) modelAction.sort( others.sort );
-        if ( others.populate ) others.populate.forEach( pop => modelAction.populate( pop ) );
+    if ( options ) {
+        if ( options.selector ) modelAction.select( options.selector );
+        if ( options.sort ) modelAction.sort( options.sort );
+        if ( options.populate ) options.populate.forEach( pop => modelAction.populate( pop ) );
     }
 
     const data = await modelAction.skip( (currentPage - 1) * currentLimit ).limit( currentLimit ).exec();

@@ -17,8 +17,8 @@ class CacheController {
      */
     static async set(req, res) {
         try {
-            const { key, duration, ...data } = req.body;
-            const result = await CacheService.set( key, data, duration );
+            const { key, duration, value } = req.body;
+            const result = await CacheService.set( key, value, duration );
             ResponseHandler.success( res, result, success.set );
         } catch ( e ) {
             ResponseHandler.error( res, error.set( e ) );
@@ -33,8 +33,8 @@ class CacheController {
      */
     static async put(req, res) {
         try {
-            const { key, duration, ...data } = req.body;
-            const result = await CacheService.put( key, data, duration );
+            const { key, duration, value } = req.body;
+            const result = await CacheService.put( key, value, duration );
             ResponseHandler.success( res, result, success.put );
         } catch ( e ) {
             ResponseHandler.error( res, error.put( e ) );
@@ -49,8 +49,8 @@ class CacheController {
      */
     static async getAll(req, res) {
         try {
-            const data = [];
-            ResponseHandler.success( res, data, success.getAll );
+            const result = await CacheService.getAll( req );
+            ResponseHandler.success( res, result, success.getAll );
         } catch ( e ) {
             ResponseHandler.error( res, error.getAll( e ) );
         }
@@ -64,7 +64,7 @@ class CacheController {
      */
     static async get(req, res) {
         try {
-            const key = req.params.id;
+            const key = req.params.key;
             const result = await CacheService.get( key );
             ResponseHandler.success( res, result, success.get );
         } catch ( e ) {
@@ -80,7 +80,7 @@ class CacheController {
      */
     static async remove(req, res) {
         try {
-            const key = req.params.id;
+            const key = req.params.key;
             const result = await CacheService.remove( key );
             ResponseHandler.success( res, result, success.remove );
         } catch ( e ) {
@@ -96,7 +96,7 @@ class CacheController {
      */
     static async removeAllByKeys(req, res) {
         try {
-            const keys = req.query.keys.split( ', ' );
+            const keys = (req.query.keys || '').split( ', ' );
             const result = await CacheService.removeAllByKeys( keys );
             ResponseHandler.success( res, result, success.removeAllByKeys );
         } catch ( e ) {
@@ -112,6 +112,9 @@ class CacheController {
      */
     static async flush(req, res) {
         try {
+            if ( req.query.keys ) {
+                return CacheController.removeAllByKeys( req, res );
+            }
             const result = await CacheService.flush();
             ResponseHandler.success( res, result, success.flush );
         } catch ( e ) {
@@ -127,9 +130,9 @@ class CacheController {
      */
     static async getStatus(req, res) {
         try {
-            const key = req.params.id;
+            const key = req.params.key;
             const result = await CacheService.getStatus( key );
-            ResponseHandler.success( res, data, success.status );
+            ResponseHandler.success( res, result, success.status );
         } catch ( e ) {
             ResponseHandler.error( res, error.status( e ) );
         }

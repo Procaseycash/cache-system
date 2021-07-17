@@ -1,9 +1,12 @@
 /**
  * Cache service definition layer
  */
+
 const { CacheModel } = require( '../models' );
 const { formatKey, getExpiration, paginatedQuery, getISODate, isCacheExist } = require( '../utils' );
+const { Messages } = require( '../configs' );
 
+// Private fields' keys
 const _inMemoryStore = Symbol(); // helps to create a private store..
 const _getFromInMemory = Symbol(); // helps to create a private get memory key..
 const _updateAccessedRecord = Symbol(); // helps to create a private get memory key..
@@ -65,8 +68,11 @@ class CacheService {
      */
     static async set(key, value, duration = 0) {
         const _key = formatKey( key );
+        if ( this[_inMemoryStore].has( _key ) ) {
+            throw new Error( Messages.error.keyExist );
+        }
         const expiration = getExpiration( duration );
-        const cache = await CacheModel.save( { key: _key, value, expiration } ).exec();
+        const cache = await CacheModel.create( { key: _key, value, expiration } );
         this[_inMemoryStore].set( _key, cache ); // store record in in-memory for easy retrieval
         return true;
     }
@@ -94,19 +100,22 @@ class CacheService {
     static async getAll(req) {
         const currentDate = getISODate();
         const query = { $or: [{ expiration: { $gte: currentDate } }, { expiration: null }] }; // used expiration in case scheduler is yet to delete expired records
-        const records = await paginatedQuery( req, CacheModel, query, { sort: { expiration: -1 } } );
+        const options = { sort: { expiration: -1 }, selector: 'key value' };
+        const records = await paginatedQuery( req, CacheModel, query, options );
         const keys = [];
 
         // return result in map as the standard cache storage mechanism.
         records.results = records.results.reduce( (result, cache) => {
-            const { key, expiration, value } = cache;
+            const { key, value } = cache;
             const _key = key.replace( process.env.CACHE_KEY, '' );
-            result.set( _key, { value, expiration } );
+            result[_key] = value;
             keys.push( key );
             return result;
-        }, new Map() );
+        }, {} );
 
-        this[_updateAccessedRecord]( keys ); // update in background for all accessed records.
+        if ( keys.length > 0 ) {
+            this[_updateAccessedRecord]( keys ); // update in background for all accessed records.
+        }
 
         return records;
     }
@@ -118,6 +127,7 @@ class CacheService {
      */
     static async get(key) {
         const _key = formatKey( key );
+
         const record = this[_getFromInMemory]( _key );
         if ( record ) {
             this[_updateAccessedRecord]( [_key] ); // update in background for all accessed records.
@@ -125,9 +135,12 @@ class CacheService {
         }
 
         const currentDate = getISODate();
-
         // used expiration in case scheduler is yet to delete expired records
         const cache = await CacheModel.findOne( { key: _key, expiration: { $gte: currentDate } } ).exec();
+
+        if ( !cache ) {
+            throw new Error( Messages.error.notFound );
+        }
 
         this[_updateAccessedRecord]( [cache.key] ); // update in background for all accessed records.
 
@@ -150,9 +163,11 @@ class CacheService {
         const currentDate = getISODate();
 
         // used expiration in case scheduler is yet to delete expired records
-        const count = await CacheModel.countDocument( { key: _key, expiration: { $gte: currentDate } } ).exec();
+        const count = await CacheModel.countDocuments( { key: _key, expiration: { $gte: currentDate } } ).exec();
 
-        this[_updateAccessedRecord]( [_key] ); // update in background for all accessed records.
+        if ( count > 0 ) {
+            this[_updateAccessedRecord]( [_key] ); // update in background for all accessed records.
+        }
 
         return { isExpired: count <= 0 };
     }
@@ -167,7 +182,7 @@ class CacheService {
         if ( this[_inMemoryStore].has( _key ) ) {
             return this[_inMemoryStore].delete( _key );
         }
-        await CacheModel.deleteOne( _key ).exec();
+        await CacheModel.deleteOne( { key: _key } ).exec();
         return true;
     }
 
@@ -177,7 +192,7 @@ class CacheService {
      */
     static async flush() {
         this[_inMemoryStore].clear();
-        await CacheModel.deleteMany( {} ).exec();
+        CacheModel.deleteMany( {} ).exec();
         return true;
     }
 
@@ -186,9 +201,14 @@ class CacheService {
      * @returns {Promise<Boolean>}
      */
     static async removeAllByKeys(keys = []) {
-        keys.forEach( key => {
+        if ( keys.length <= 0 ) {
+            throw new Error( Messages.error.noRecordToDelete );
+        }
+
+        keys = keys.map( key => {
             const _key = key.includes( process.env.CACHE_KEY ) ? key : formatKey( key );
             this[_inMemoryStore].delete( _key );
+            return _key;
         } );
         await CacheModel.deleteMany( { key: { $in: keys } } ).exec();
         return true;

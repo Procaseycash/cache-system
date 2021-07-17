@@ -69,7 +69,7 @@ class ScheduleService {
 
                     console.info( `Scheduler running for cache with expiration: interval: ${ interval }, current date:  ${ currentDate }` );
 
-                    const query = { expiration: { $lt: currentDate } };
+                    const query = { expiration: { $lte: currentDate } };
                     await this[_deleteRecordsWithSchedular]( query );
 
                 } catch ( e ) {

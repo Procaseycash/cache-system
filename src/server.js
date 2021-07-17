@@ -21,7 +21,7 @@ const setupDatabase = () => {
             console.info( 'MONGO_DB: Connected' );
 
             // start scheduling jobs
-            ScheduleService.removeRecordsWithExpiration();
+            // ScheduleService.removeRecordsWithExpiration();
             ScheduleService.removeRecordsWithoutExpiration();
 
         } )
@@ -35,13 +35,13 @@ const setupDatabase = () => {
  * @returns {*}
  */
 const bootstrap = () => {
+    setupDatabase(); // initialize DB setup.
     const app = express();
     app.use( logger( 'dev' ) );
     app.use( express.json() );
     app.use( express.urlencoded( { extended: false } ) );
     app.use( cookieParser() );
     AppRoute.init( app ); // initialize app routing
-    setupDatabase(); // initialize DB setup.
     return app;
 };
 

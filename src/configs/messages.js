@@ -23,6 +23,9 @@ const messages = {
         removeAllByKeys: e => `Unable to remove records by keys due to ${ e.message }, please try again.`,
         flush: e => `Unable to remove all records due to ${ e.message }, please try again.`,
         status: e => `Unable to retrieved status of requested key due to ${ e.message }, please try again.`,
+        keyExist: 'key already exist. perform update instead,',
+        notFound: 'record not found.',
+        noRecordToDelete: 'No record to remove.'
     }
 };
 

@@ -7,6 +7,7 @@ const CacheSchema = new Schema( {
     key: {
         type: String,
         required: true,
+        unique: true,
         index: true,
     },
     value: {
