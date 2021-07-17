@@ -96,7 +96,7 @@ class CacheController {
      */
     static async removeAllByKeys(req, res) {
         try {
-            const keys = (req.query.keys || '').split( ', ' );
+            const keys = (req.query.keys || '').split( ',' );
             const result = await CacheService.removeAllByKeys( keys );
             ResponseHandler.success( res, result, success.removeAllByKeys );
         } catch ( e ) {
