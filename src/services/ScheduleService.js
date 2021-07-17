@@ -5,6 +5,7 @@
 const cron = require( 'node-cron' );
 const { CacheModel } = require( '../models' );
 const { getISODate } = require( '../utils' );
+const { Messages } = require( '../configs' );
 const CacheService = require( './CacheService' );
 
 // private field key
@@ -73,6 +74,9 @@ class ScheduleService {
                     await this[_deleteRecordsWithSchedular]( query );
 
                 } catch ( e ) {
+                    if ( e.message.includes( Messages.error.noRecordToDelete ) ) {
+                        return console.info( e.message );
+                    }
                     console.error( 'Cache without expiration implementation error: ', e.stack );
                 }
 
@@ -112,6 +116,9 @@ class ScheduleService {
                     await this[_deleteRecordsWithSchedular]( query );
 
                 } catch ( e ) {
+                    if ( e.message.includes( Messages.error.noRecordToDelete ) ) {
+                        return console.info( e.message );
+                    }
                     console.error( 'Cache without expiration implementation error: ', e.stack );
                 }
 

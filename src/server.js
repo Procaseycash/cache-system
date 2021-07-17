@@ -21,7 +21,7 @@ const setupDatabase = () => {
             console.info( 'MONGO_DB: Connected' );
 
             // start scheduling jobs
-            // ScheduleService.removeRecordsWithExpiration();
+            ScheduleService.removeRecordsWithExpiration();
             ScheduleService.removeRecordsWithoutExpiration();
 
         } )

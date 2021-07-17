@@ -1,0 +1,456 @@
+{
+	"info": {
+		"_postman_id": "e25c0dc9-6248-43be-8655-a9b49c601406",
+		"name": "Cache System API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Cache Set",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"key\": \"store_pie\",\n    \"value\": {\"egg\": 1},\n    \"duration\": 60\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}",
+					"host": [
+						"{{BASE_URL}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Example",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"key\": \"store_pie\",\n    \"value\": {\"egg\": 1},\n    \"duration\": 60\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}",
+							"host": [
+								"{{BASE_URL}}"
+							]
+						}
+					},
+					"_postman_previewlanguage": "json",
+					"header": null,
+					"cookie": [],
+					"body": "{\n    \"message\": \"Information was stored successfully.\",\n    \"data\": true,\n    \"status\": 200\n}"
+				}
+			]
+		},
+		{
+			"name": "Cache Update",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"key\": \"store_pie\",\n    \"value\": {\"egg\": 1},\n    \"duration\": 200\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}store_pie",
+					"host": [
+						"{{BASE_URL}}store_pie"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Example",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"key\": \"store_pie\",\n    \"value\": {\"egg\": 1},\n    \"duration\": 100\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}store_pie",
+							"host": [
+								"{{BASE_URL}}store_pie"
+							]
+						}
+					},
+					"_postman_previewlanguage": "json",
+					"header": null,
+					"cookie": [],
+					"body": "{\n    \"message\": \"Update data in store successfully.\",\n    \"data\": true,\n    \"status\": 200\n}"
+				}
+			]
+		},
+		{
+			"name": "Cache Get By Key",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}store_pie",
+					"host": [
+						"{{BASE_URL}}store_pie"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Example",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"key\": \"store_pie\",\n    \"value\": {\"egg\": 1},\n    \"duration\": 200\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}store_pie",
+							"host": [
+								"{{BASE_URL}}store_pie"
+							]
+						}
+					},
+					"_postman_previewlanguage": "json",
+					"header": null,
+					"cookie": [],
+					"body": "{\n    \"message\": \"Fetch an item from store successfully.\",\n    \"data\": {\n        \"egg\": 1\n    },\n    \"status\": 200\n}"
+				}
+			]
+		},
+		{
+			"name": "Cache Get All",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}?page=1&limit=10",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Example",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"key\": \"store_pie\",\n    \"value\": {\"egg\": 1},\n    \"duration\": 200\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}?page=1&limit=10",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": "json",
+					"header": null,
+					"cookie": [],
+					"body": "{\n    \"message\": \"All stored information was retrieved successfully.\",\n    \"data\": {\n        \"totalRecords\": 3,\n        \"currentPage\": 1,\n        \"totalPages\": 1,\n        \"limit\": 10,\n        \"results\": {\n            \"sport\": \"picnic, racing\",\n            \"store_lil\": {\n                \"egg\": 1\n            },\n            \"store_pie\": {\n                \"egg\": 1\n            }\n        }\n    },\n    \"status\": 200\n}"
+				}
+			]
+		},
+		{
+			"name": "Cache Get Status",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}store_pie/status",
+					"host": [
+						"{{BASE_URL}}store_pie"
+					],
+					"path": [
+						"status"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Example",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"key\": \"store_pie\",\n    \"value\": {\"egg\": 1},\n    \"duration\": 200\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}store_pie/status",
+							"host": [
+								"{{BASE_URL}}store_pie"
+							],
+							"path": [
+								"status"
+							]
+						}
+					},
+					"_postman_previewlanguage": "json",
+					"header": null,
+					"cookie": [],
+					"body": "{\n    \"message\": \"successfully retrieved status for a requested key.\",\n    \"data\": {\n        \"isExpired\": true\n    },\n    \"status\": 200\n}"
+				}
+			]
+		},
+		{
+			"name": "Cache remove by Key",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}store_pie",
+					"host": [
+						"{{BASE_URL}}store_pie"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Cache remove",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}store_pie",
+							"host": [
+								"{{BASE_URL}}store_pie"
+							]
+						}
+					},
+					"_postman_previewlanguage": "json",
+					"header": null,
+					"cookie": [],
+					"body": "{\n    \"message\": \"Remove data in store successfully.\",\n    \"data\": true,\n    \"status\": 200\n}"
+				}
+			]
+		},
+		{
+			"name": "Cache Flush",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}flush",
+					"host": [
+						"{{BASE_URL}}flush"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Example",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}flush",
+							"host": [
+								"{{BASE_URL}}flush"
+							]
+						}
+					},
+					"_postman_previewlanguage": "json",
+					"header": null,
+					"cookie": [],
+					"body": "{\n    \"message\": \"Remove data in store successfully.\",\n    \"data\": true,\n    \"status\": 200\n}"
+				}
+			]
+		},
+		{
+			"name": "Cache Flush by keys",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}flush?keys=store_pie",
+					"host": [
+						"{{BASE_URL}}flush"
+					],
+					"query": [
+						{
+							"key": "keys",
+							"value": "store_pie"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Example",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}flush?keys=store_pie",
+							"host": [
+								"{{BASE_URL}}flush"
+							],
+							"query": [
+								{
+									"key": "keys",
+									"value": "store_pie"
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": "json",
+					"header": null,
+					"cookie": [],
+					"body": "{\n    \"message\": \"Remove records by specified keys in store successfully.\",\n    \"data\": true,\n    \"status\": 200\n}"
+				}
+			]
+		}
+	]
+}
