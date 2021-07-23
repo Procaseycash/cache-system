@@ -114,6 +114,7 @@ class CacheService {
         records.results = records.results.reduce( (result, cache) => {
             const { key, value } = cache;
             const _key = key.replace( process.env.CACHE_KEY, '' );
+            this[_inMemoryStore].set( key, cache ); // store record in in-memory for easy retrieval
             result[_key] = value;
             keys.push( key );
             return result;
@@ -149,6 +150,8 @@ class CacheService {
         }
 
         this[_updateAccessedRecord]( [cache.key] ); // update in background for all accessed records.
+
+        this[_inMemoryStore].set( _key, cache ); // store record in in-memory for easy retrieval
 
         return cache?.value || null;
     }
